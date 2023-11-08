@@ -1,6 +1,8 @@
 import 'package:flame/game.dart';
 import 'package:flame_game/game/doodle_dash.dart';
+import 'package:flame_game/game/widgets/game_over_overlay.dart';
 import 'package:flame_game/game/widgets/game_overlay.dart';
+import 'package:flame_game/game/widgets/main_menu_overlay.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -57,9 +59,9 @@ class _MyHomePageState extends State<MyHomePage> {
             child: GameWidget(
               game: game,
               overlayBuilderMap: <String, Widget Function(BuildContext, Game)>{
-                'gameOverlay': (context, game) => GameOverlay(
-                      game,
-                    )
+                'gameOverlay': (context, game) => GameOverlay(game),
+                'mainMenuOverlay': (context, game) => MainMenuOverlay(game),
+                'gameOverOverlay': (context, game) => GameOverOverlay(game),
               },
             ),
           );

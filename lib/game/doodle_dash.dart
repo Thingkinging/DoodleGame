@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame_game/game/sprites/player.dart';
 
 import 'managers/managers.dart';
 import 'package:flame_game/game/world.dart';
@@ -19,6 +20,8 @@ class DoodleDash extends FlameGame
   int screenBufferSpace = 300;
   ObjectManager objectManager = ObjectManager();
 
+  late Player player;
+
   @override
   FutureOr<void> onLoad() async {
     await add(_world);
@@ -35,7 +38,7 @@ class DoodleDash extends FlameGame
     super.update(dt);
 
     if (gameManager.isIntro) {
-      // overlays.add('mainMenuOverlay');
+      overlays.add('mainMenuOverlay');
       return;
     }
 
@@ -50,11 +53,15 @@ class DoodleDash extends FlameGame
   }
 
   void initializeGameStart() {
+    setCharacter();
+
     gameManager.reset();
 
     if (children.contains(objectManager)) objectManager.removeFromParent();
 
     levelManager.reset();
+
+    player.resetPosition();
 
     objectManager = ObjectManager(
         minVerticalDistanceToNextPlatform: levelManager.minDistance,
@@ -65,17 +72,23 @@ class DoodleDash extends FlameGame
     objectManager.configure(levelManager.level, levelManager.difficulty);
   }
 
-  void setCharacter() {}
+  void setCharacter() {
+    player = Player(
+      character: gameManager.character,
+      jumpSpeed: levelManager.startingJumpSpeed,
+    );
+    add(player);
+  }
 
   void startGame() {
     initializeGameStart();
     gameManager.state = GameState.playing;
-    // overlays.remove('mainMenuOverlay');
+    overlays.remove('mainMenuOverlay');
   }
 
   void resetGame() {
     startGame();
-    // overlays.remove('gameOverOverlay');
+    overlays.remove('gameOverOverlay');
   }
 
   void togglePauseState() {
